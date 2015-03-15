@@ -7,7 +7,7 @@ https://docs.python.org/3.4/library/imaplib.html
 http://tools.ietf.org/html/rfc3501
 """
 
-import sys
+import subprocess
 import imaplib
 import password
 from email.parser import HeaderParser
@@ -124,6 +124,11 @@ def parse_email_header(header):
     return {'from': msg['From'], 'subject': msg['Subject']}
 
 
+def send_notification(info):
+    # Send two separate arguments, the first will be the title (bolded).
+    subprocess.call(['notify-send', info['from'], info['subject']])
+
+
 ##### Main program #####
 
 # Login
@@ -157,15 +162,13 @@ while(True):
         # The uids returned include the from_uid specified in the above call,
         # if there are any emails in the specified folder, of course.
         if (not uids) or (len(uids) == 1 and last_uid == uids[0]):
-            sys.stdout.write("moving on\n")
-            sys.stdout.flush()
             # No mail or no new mail in this folder.
             continue
         for uid in uids[1:]:
             header = get_email_header(mail, folder, uid)
             info = parse_email_header(header)
-            sys.stdout.write(info['from'])
-            sys.stdout.flush()
+            send_notification(info)
+            
         # Update the local uids for future queries.
         largest_uids[folder] = uids[-1]
 

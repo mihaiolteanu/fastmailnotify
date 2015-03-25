@@ -87,7 +87,7 @@ def select_folder(mail, folder):
     All future actions are to be carried out relative to this folder.
     """
     try:
-        result, response = mail.select(folder)
+        result, response = mail.select(folder, readonly = True)
     except imaplib.IMAP4.error as err:
         print(err)
         print(folder)

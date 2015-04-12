@@ -12,7 +12,6 @@ IMAPv4 protocol documentation: http://tools.ietf.org/html/rfc3501
 USER_NAME = "mihai_olteanu@fastmail.fm"
 
 # Choose how to input your password.
-
 ## Uncomment this line if you want the password stored in a file.
 ## The string should point to the file path, either relative or absolute.
 ## The file should contain the password on the first line.
@@ -144,8 +143,11 @@ def get_password():
     if PASSWORD_HOW == "ask_at_login":
         password = getpass.getpass()
     else:
-        if os.path.exists(PASSWORD_HOW):
-            with open(PASSWORD_HOW, 'r') as f:
+        # Search for the password file in the physical location of this script.
+        script_path = os.path.dirname(os.path.realpath(__file__))
+        pass_file = os.path.join(script_path, PASSWORD_HOW)
+        if os.path.exists(pass_file):
+            with open(pass_file, 'r') as f:
                 # Remove tabs, whitespace and newline.
                 password = f.readline().strip(' \t\n\r')
     return password

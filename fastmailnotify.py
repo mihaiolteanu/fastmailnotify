@@ -26,8 +26,23 @@ PASSWORD_HOW = "my_password_file"
 NOTIFICATION_ICON = 'stock_mail-unread'
 
 # Check for new email frequency, in seconds
-REFRESH_RATE = 3
+REFRESH_RATE = 300
 
+# Do not look for new email in these folders.
+# All the folders start with the INBOX token, which
+# is the 'root' folder, so to speak.
+# Use . to specify subfolders. For example, INBOX.Work.Myboss
+# will ignore the Myboss folder which is under the Work
+# folder in the inbox.
+# For folders with spaces in them, use a double string (string
+# within a string).
+IGNORE_FOLDERS = [
+    "INBOX.Archive",
+    "INBOX.Drafts",
+    "\"INBOX.Junk Mail\"",
+    "\"INBOX.Sent Items\"",
+    "INBOX.Trash",
+]
 
 import getpass
 import imaplib
@@ -60,6 +75,10 @@ def get_folder_names(mail):
         names.append(name.strip())
 
     return names
+
+def filter_folders(folders):
+    # Remove from the list of folders those folders that are not of interest.
+    return list(set(folders) - set(IGNORE_FOLDERS))
 
 
 def get_server_uids(mail, folder, from_uid = 0):

@@ -201,7 +201,7 @@ def set_local_uid(folder, uid):
     global local_uids
     local_uids[folder] = uid
 
-def initialize_local_uids(folders, local_uids):
+def initialize_local_uids(mail, folders, local_uids):
     """
     Set the available local UID value for each folder in the given list.
     Set the UID to zero if a local folder name / value pair does not exist for that entry.
@@ -249,15 +249,24 @@ def start_monitoring(mail, folders):
 
 
 ##### Main program #####
-
-password = get_password()
-mail = login()
-# All the folders (or mailboxes) in the current email account.
-folders = get_folder_names(mail)
-# Always set to the greatest uid for each email folder.
-# If new emails arrive after we've set this, their ids will be greater than this.
-# UIDs are only unique for the selected folder and NOT for the whole account,
-# so keep the largest uid for each folder
 local_uids = {}
-initialize_local_uids(folders, local_uids)
-start_monitoring(mail, folders)
+
+def main():
+    try:
+        password = get_password()
+        mail = login()
+        # All the folders (or mailboxes) in the current email account.
+        folders = get_folder_names(mail)
+        folders = filter_folders(folders)
+        # Always set to the greatest uid for each email folder.
+        # If new emails arrive after we've set this, their ids will be greater than this.
+        # UIDs are only unique for the selected folder and NOT for the whole account,
+        # so keep the largest uid for each folder
+        initialize_local_uids(mail, folders, local_uids)
+        start_monitoring(mail, folders)
+    except Exception as e:
+        print("Something went wrong:")
+        print(e)
+        main()
+
+main()

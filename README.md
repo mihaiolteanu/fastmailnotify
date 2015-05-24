@@ -18,4 +18,5 @@ Modify the downloaded file and
 - Change your email address
 - Choose the file where you want your password stored or let the script ask for the password every time you run it
 - Pick the time interval for checking new email
+- Select which folders from your inbox to ignore
 - Pick another icon for the new mail notification box
